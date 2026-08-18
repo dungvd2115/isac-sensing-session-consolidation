@@ -66,7 +66,7 @@ def _agent(seed=1, algorithm=ALG):
 def test_experiment_config_is_default_not_a_value_lock(tmp_path) -> None:
     path = _candidate(tmp_path, (
         ("seed: 0", "seed: 123"),
-        ("physical_slots: 100000", "physical_slots: 800"),
+        ("physical_slots: 1000000", "physical_slots: 800"),
         ('arrival_regimes: ["independent", "clustered"]', 'arrival_regimes: ["clustered"]'),
         ("interval_physical_slots: 10000", "interval_physical_slots: 200"),
         ('best_metric: "paired_return_difference"', 'best_metric: "validation_return"'),
@@ -96,7 +96,7 @@ def test_common_trace_experiment_changes_only_method_identity() -> None:
 
 @pytest.mark.parametrize("old,new", (
     ("seed: 0", "seed: -1"),
-    ("physical_slots: 100000", "physical_slots: 0"),
+    ("physical_slots: 1000000", "physical_slots: 0"),
     ('arrival_regimes: ["independent", "clustered"]', 'arrival_regimes: ["unknown"]'),
     ('method: "joint_credit_constrained_ppo"', 'method: "edge_free_set_constrained_ppo"'),
     ("keep_top_k: 1", "keep_top_k: 0"),
