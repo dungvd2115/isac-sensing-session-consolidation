@@ -1,0 +1,310 @@
+schema_version: "isac-ssc-env-v1"
+profile_name: "canonical_system_level_isac"
+
+units:
+  distance: "m"
+  velocity: "m/s"
+  acceleration: "m/s^2"
+  time: "s"
+  bandwidth: "Hz"
+  power: "W"
+  rate: "bit/s"
+  carrier_frequency: "Hz"
+  noise_psd_input: "dBm/Hz"
+  rcs: "m^2"
+  angle: "rad"
+
+system:
+  slot_duration_s: 0.1
+  horizon_slots: 200
+  carrier_frequency_hz: 6.0e+9
+  propagation_speed_m_per_s: 299792458.0
+  total_bandwidth_hz: 2.0e+7
+  total_power_w: 40.0
+  noise_psd_dbm_per_hz: -174.0
+  communication_noise_figure_db: 7.0
+  sensing_noise_figure_db: 7.0
+  communication_implementation_gap_db: 1.5
+
+geometry:
+  bs_position_m: [0.0, 0.0]
+  simulation_region:
+    x_min_m: -200.0
+    x_max_m: 200.0
+    y_min_m: -200.0
+    y_max_m: 200.0
+  minimum_link_distance_m: 10.0
+  boundary_rule: "reflect"
+  communication_user_initial_position:
+    distribution: "uniform_area_annulus"
+    minimum_radius_m: 20.0
+    maximum_radius_m: 180.0
+    angle_distribution: "uniform_minus_pi_pi"
+  target_initial_position:
+    distribution: "uniform_area_annulus"
+    minimum_radius_m: 30.0
+    maximum_radius_m: 140.0
+    angle_distribution: "uniform_minus_pi_pi"
+  aoi:
+    shape: "disk"
+    radius_distribution: "uniform_continuous"
+    radius_min_m: 15.0
+    radius_max_m: 30.0
+    center_offset_distribution: "truncated_isotropic_gaussian"
+    center_offset_std_m: 4.0
+    center_offset_max_fraction_of_radius: 0.50
+
+population:
+  sensing_tenants: 4
+  communication_users: 6
+  physical_targets: 8
+
+tenant_profiles:
+  tenant_1:
+    permitted_tasks: ["detection", "localization", "tracking"]
+    sla_violation_budget: 0.05
+  tenant_2:
+    permitted_tasks: ["detection", "localization", "tracking"]
+    sla_violation_budget: 0.05
+  tenant_3:
+    permitted_tasks: ["detection", "localization", "tracking"]
+    sla_violation_budget: 0.05
+  tenant_4:
+    permitted_tasks: ["detection", "localization", "tracking"]
+    sla_violation_budget: 0.05
+
+mobility:
+  communication_users:
+    model: "constant_velocity_gaussian_acceleration"
+    initial_speed_distribution: "uniform_continuous"
+    initial_speed_min_m_per_s: 0.0
+    initial_speed_max_m_per_s: 8.0
+    initial_heading_distribution: "uniform_minus_pi_pi"
+    acceleration_std_m_per_s2: 0.5
+  targets:
+    model: "constant_velocity_gaussian_acceleration"
+    initial_speed_distribution: "uniform_continuous"
+    initial_speed_min_m_per_s: 0.0
+    initial_speed_max_m_per_s: 12.0
+    initial_heading_distribution: "uniform_minus_pi_pi"
+    acceleration_std_m_per_s2: 1.0
+
+communication:
+  channel:
+    model: "log_distance_shadowed_rayleigh"
+    reference_distance_m: 1.0
+    pathloss_exponent: 3.0
+    shadowing_std_db: 4.0
+    shadowing_initial_distribution: "stationary_zero_mean_normal_db"
+    shadowing_correlation: 0.95
+    fading_initial_distribution: "unit_circular_complex_normal"
+    fading_correlation: 0.90
+  scheduler:
+    type: "equal_share_active_demand"
+  traffic:
+    model: "markov_on_off_lognormal_demand"
+    initial_on_probability: 0.50
+    on_to_off_probability: 0.08
+    off_to_on_probability: 0.20
+    demand_distribution: "lognormal"
+    demand_median_bit_per_s: 5.0e+6
+    demand_natural_log_std: 0.45
+  minimum_rate_bit_per_s: 2.0e+6
+  normalized_shortfall_budget: 0.05
+
+sensing:
+  architecture: "single_bs_monostatic_fixed_frontend"
+  combined_frontend_gain_db: 24.0
+  system_loss_db: 3.0
+  effective_aperture_m: 0.50
+  shadowing_std_db: 3.0
+  shadowing_initial_distribution: "stationary_zero_mean_normal_db"
+  shadowing_correlation: 0.95
+  fading_initial_distribution: "unit_circular_complex_normal"
+  fading_correlation: 0.90
+  false_alarm_probability: 1.0e-4
+  detection_gate_probability: 0.90
+  rcs:
+    process: "correlated_lognormal_dbsm"
+    initial_distribution: "normal_dbsm"
+    median_m2: 1.0
+    dbsm_std_db: 3.0
+    correlation: 0.98
+  tracking:
+    initial_covariance_diag: [25.0, 25.0, 4.0, 4.0]
+    initial_covariance_diag_units: ["m^2", "m^2", "(m/s)^2", "(m/s)^2"]
+    initial_covariance_semantics: "creation_slot_prior_before_first_measurement_update"
+
+resource_profiles:
+  economical:
+    sensing_bandwidth_hz: 2.0e+6
+    sensing_power_w: 2.0
+    update_period_slots: 3
+  balanced:
+    sensing_bandwidth_hz: 4.0e+6
+    sensing_power_w: 5.0
+    update_period_slots: 2
+  precision:
+    sensing_bandwidth_hz: 8.0e+6
+    sensing_power_w: 8.0
+    update_period_slots: 2
+  rapid:
+    sensing_bandwidth_hz: 4.0e+6
+    sensing_power_w: 8.0
+    update_period_slots: 1
+
+requests:
+  fixed_tenant_generation_contract:
+    task_sampling: "restrict_global_probabilities_to_tenant_permitted_tasks_then_renormalize"
+    completion_value_sampling: "global_task_conditioned_shared_across_tenants"
+  target_reference:
+    type: "exact_physical_target_id"
+    selection_distribution: "uniform_categorical"
+  task:
+    distribution: "categorical"
+    values: ["detection", "localization", "tracking"]
+    probabilities: [0.35, 0.35, 0.30]
+  service_duration_slots:
+    detection: 3
+    localization: 4
+    tracking: 8
+  latest_start_slack_slots:
+    distribution: "discrete_uniform_inclusive"
+    minimum: 2
+    maximum: 8
+  update_interval_slots:
+    detection:
+      distribution: "categorical"
+      values: [1, 2, 3]
+      probabilities: [0.25, 0.45, 0.30]
+    localization:
+      distribution: "categorical"
+      values: [1, 2, 3]
+      probabilities: [0.30, 0.45, 0.25]
+    tracking:
+      distribution: "categorical"
+      values: [1, 2]
+      probabilities: [0.65, 0.35]
+  quality_thresholds:
+    detection_probability:
+      distribution: "uniform_continuous"
+      minimum: 0.85
+      maximum: 0.98
+    localization_peb_m:
+      distribution: "uniform_continuous"
+      minimum: 1.5
+      maximum: 6.0
+    tracking_pcrb_m:
+      distribution: "uniform_continuous"
+      minimum: 1.5
+      maximum: 5.0
+  completion_values:
+    detection:
+      distribution: "uniform_continuous"
+      minimum: 0.8
+      maximum: 1.2
+    localization:
+      distribution: "uniform_continuous"
+      minimum: 1.5
+      maximum: 2.5
+    tracking:
+      distribution: "uniform_continuous"
+      minimum: 2.5
+      maximum: 4.0
+  sharing_permission:
+    distribution: "bernoulli"
+    probability_true: 0.90
+  defer_cooldown_slots: 1
+
+arrivals:
+  active_regime: "independent"
+  horizon_stop_rule: "do_not_generate_if_arrival_plus_task_duration_exceeds_horizon"
+  independent:
+    model: "per_tenant_poisson"
+    per_tenant_rate_per_slot: 0.08
+  clustered:
+    model: "poisson_parent_with_child_requests"
+    parent_rate_per_slot: 0.08
+    child_count_distribution: "one_plus_poisson"
+    child_poisson_mean: 2.0
+    temporal_offset_distribution: "discrete_uniform_inclusive"
+    temporal_offset_min_slots: 0
+    temporal_offset_max_slots: 3
+    child_tenant_distribution: "uniform_categorical"
+    parent_target_distribution: "uniform_categorical"
+    parent_task_distribution: "same_as_request_task_distribution"
+    inherit_parent_target_probability: 0.90
+    inherit_parent_task_probability: 0.60
+    child_aoi_center_offset_std_m: 4.0
+
+sharing_authorization:
+  fixed_contract: "d03_b_every_merge_request_permission_plus_cross_tenant_pair_authorization"
+  tenant_pair_matrix:
+    - [true, true, true, false]
+    - [true, true, false, true]
+    - [true, false, true, true]
+    - [false, true, true, true]
+
+target_compatibility:
+  canonical_rule: "exact_target_id_for_all_tasks"
+  allow_exact_target_match: true
+  allow_same_class_match: false
+
+compatibility:
+  minimum_spatial_coverage_ratio: 0.80
+  use_actual_target_geometry_for_physics: true
+  use_aoi_overlap_for_service_coverage: true
+  require_target_inside_request_aoi_for_admission: true
+  require_target_inside_session_aoi_for_valid_output: true
+  require_current_quality_feasibility: true
+  require_existing_member_preservation: true
+  reserve_future_known_updates: true
+  trigger_shared_update_on_every_admission: true
+  include_request_value_in_mask: false
+  include_reward_weight_in_mask: false
+
+sla:
+  tenant_budget_source: "tenant_profiles"
+  deadline_semantics: "latest_service_start_slot_hard_pre_admission"
+  post_admission_violation_semantics: "first_valid_output_age_or_completion_failure_per_accepted_request"
+  failed_sensing_attempt_semantics: "does_not_refresh_but_is_not_immediate_violation_while_previous_output_is_fresh"
+  request_must_receive_at_least_one_valid_output_to_complete: true
+  zero_accepted_request_reporting: "not_applicable"
+
+reward:
+  finite_horizon_discount_factor: 1.0
+  sensing_resource_cost_weight: 0.20
+  sensing_cost_bandwidth_weight: 0.50
+  sensing_cost_power_weight: 0.50
+
+observation:
+  expose_current_geometry: true
+  expose_current_effective_channel_state: true
+  expose_future_primitive_uncertainty: false
+  include_request_value: true
+  include_deadline_slack: true
+  include_communication_load: true
+  include_derived_quality_margins: true
+  direct_outcome_sampling_allowed: false
+
+oracle:
+  type: "finite_horizon_offline_clairvoyant_plan_milp"
+  instance_selection_limits:
+    semantics: "exogenous_trace_filter_not_selected_instance_feasibility_cap"
+    horizon_slots: 12
+    max_requests: 8
+  enumerate_single_session_plans: true
+  at_most_one_admission_per_slot: true
+  repeated_defer_action_consumption_relaxed: true
+  verify_with_exhaustive_search: true
+  solver_relative_gap: 1.0e-6
+
+trace_generation:
+  registered_arrival_regimes: ["independent", "clustered"]
+  seeding:
+    namespace: "isac-ssc-primitive-trace-v1"
+    derivation: "sha256_typed_token_v1"
+    numpy_bit_generator: "PCG64DXSM"
+    substream_contract: "keyed_order_independent"
+    root_seed_minimum: 0
+    root_seed_maximum: 18446744073709551615

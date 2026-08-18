@@ -1,0 +1,34 @@
+schema_version: "isac-ssc-constrained-ppo-v1"
+
+runtime:
+  device: "cpu"
+
+model:
+  hidden_dim: 128
+  profile_embedding_dim: 32
+
+optimizer:
+  learning_rate: 3.0e-4
+  epsilon: 1.0e-5
+
+ppo:
+  discount: 1.0
+  gae_lambda: 0.95
+  clip_ratio: 0.20
+  value_clip_ratio: 0.20
+  entropy_coefficient: 0.01
+  reward_value_coefficient: 0.50
+  constraint_value_coefficient: 0.50
+  max_gradient_norm: 0.50
+  epochs_per_rollout: 10
+  minibatch_decisions: 512
+  target_kl: 0.03
+
+dual:
+  initial_value: 0.0
+  learning_rate: 0.01
+  maximum: 100.0
+
+normalization:
+  clip: 10.0
+  epsilon: 1.0e-8

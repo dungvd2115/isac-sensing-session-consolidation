@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using the metadata below."
+title: "Sense Once, Serve Many: Common-Trace Factorized Constrained PPO for Online Sensing-Session Consolidation in Multi-Tenant ISAC Networks"
+type: software
+authors:
+  - family-names: "Vu"
+    given-names: "Dang-Dung"
+repository-code: "https://github.com/dungvd2115/isac-sensing-session-consolidation"
+version: 0.1.0

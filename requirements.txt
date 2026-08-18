@@ -1,0 +1,6 @@
+setuptools>=61
+numpy>=1.26,<3
+scipy>=1.11,<2
+PyYAML>=6.0,<7
+torch>=2.6,<3
+pytest>=8,<9

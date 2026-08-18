@@ -1,0 +1,1 @@
+"""Deterministic scientific primitives for ISAC-SSC."""

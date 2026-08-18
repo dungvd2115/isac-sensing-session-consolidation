@@ -1,0 +1,76 @@
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+.cache/
+.tox/
+.nox/
+
+# Virtual environments and local packages
+.venv/
+venv/
+env/
+ENV/
+__pypackages__/
+
+# Build and coverage output
+build/
+dist/
+site/
+*.egg
+*.egg-info/
+.eggs/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+junit.xml
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+.envrc
+*.key
+*.pem
+
+# Editors and operating systems
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+Desktop.ini
+.ipynb_checkpoints/
+
+# Logs, temporary files, and external trackers
+*.log
+*.prof
+*.tmp
+*.temp
+*.bak
+*.orig
+wandb/
+mlruns/
+runs/
+lightning_logs/
+tensorboard/
+
+# Generated research outputs and local archives
+/artifacts/
+/data/
+/notebooks/
+*.pt
+*.pth
+*.ckpt
+*.zip
+
+# Local agent metadata
+.agents/
+.codex/
