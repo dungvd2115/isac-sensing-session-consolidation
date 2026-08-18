@@ -2,7 +2,7 @@
 
 ## Common-Trace Factorized Constrained PPO for Online Sensing-Session Consolidation in Multi-Tenant ISAC Networks
 
-This repository contains the frozen research implementation accompanying the IEEE TNSM paper "Sense Once, Serve Many: Common-Trace Factorized Constrained PPO for Online Sensing-Session Consolidation in Multi-Tenant ISAC Networks."
+This repository contains the research implementation accompanying the manuscript "Sense Once, Serve Many: Common-Trace Factorized Constrained PPO for Online Sensing-Session Consolidation in Multi-Tenant ISAC Networks."
 
 ## Overview
 
@@ -77,7 +77,7 @@ On Windows PowerShell, activate the environment with:
 python -m pip install -e ".[test]"
 ```
 
-The pinned dependency ranges are also available in `requirements.txt`.
+The dependency ranges are also listed in `requirements.txt`.
 
 ## Reproducing the Paper Protocol
 
