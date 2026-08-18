@@ -186,7 +186,7 @@ Citation metadata is provided in `CITATION.cff`. Journal DOI, volume, issue, pag
 
 ## License
 
-No software license has been selected for this repository. A license decision is required from the owner before public reuse terms can be stated.
+This repository is licensed under the MIT License. See `LICENSE` for the full license text.
 
 ## Author
 
